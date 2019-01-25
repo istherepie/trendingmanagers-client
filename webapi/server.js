@@ -1,12 +1,11 @@
-const express = require("express")
-const app = express()
+const WebSocket = require('ws');
 
-app.get("/", (req, res) => {
-    res.json({
-        status: "it works"
-    })
-})
+const wss = new WebSocket.Server({ port: 8080 });
 
-app.listen(8080, () => {
-    console.log("Server is fully armed and operational")
-})
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+    });
+
+    ws.send('received');
+});
