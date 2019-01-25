@@ -67,7 +67,12 @@ export default {
 
       let name = manager.name
       let user = manager.votee
-      this.entries.unshift(`${user} has voted for ${name}`)
+
+      let message = `${user} has voted for ${name}`
+      this.entries.unshift(message)
+
+      // Websocket update
+      this.$socket.send(message)
 
       manager.votee = ''
       manager.field = false
@@ -76,6 +81,9 @@ export default {
       item.field = !item.field
       console.log('toggle this')
     }
+  },
+  created () {
+    console.log(this.$steffen)
   }
 }
 </script>
