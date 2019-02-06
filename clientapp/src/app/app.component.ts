@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit} from '@angular/core';
+import { SocketService } from './data/socket.service';
 
 class Manager {
   id: number;
@@ -18,10 +18,11 @@ class Log {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Best manager evah!';
-
-  modeltext: string = '';
+  socket: SocketService;
+  user: string = 'AwesomeUser';
+  someMessage: string = '';
 
   logging: Log[] = [];
 
@@ -46,12 +47,19 @@ export class AppComponent {
     }
   ];
 
-  constructor() {
-
+  constructor(socket: SocketService) {
+    this.socket = socket;
   }
 
   voteUp(manager: Manager, log: Log) {
     manager.votes++
+
+    const payload = {
+      manager: manager.name,
+      votes: manager.votes
+    }
+
+    this.socket.update(payload)
 
    log = {
       timestamp: Date.now(),
@@ -66,5 +74,16 @@ export class AppComponent {
       return manager.votes--
     }
 
+    const payload = {
+      manager: manager.name,
+      votes: manager.votes
+    }
+
+    this.socket.update(payload)
+
+  }
+
+  ngOnInit(): void {
+    this.socket.connect()
   }
 }
