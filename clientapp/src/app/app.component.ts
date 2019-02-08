@@ -1,17 +1,7 @@
 import { Component, OnInit} from '@angular/core';
-import { SocketService } from './data/socket.service';
+import { Subject } from 'rxjs';
 
-class Manager {
-  id: number;
-  name: string;
-  image: string;
-  votes: number;
-}
-
-class Log {
-  timestamp: Object;
-  entry: string;
-}
+const subject = new Subject<any>();
 
 @Component({
   selector: 'app-root',
@@ -20,70 +10,108 @@ class Log {
 })
 export class AppComponent implements OnInit {
   title = 'Best manager evah!';
-  socket: SocketService;
-  user: string = 'AwesomeUser';
-  someMessage: string = '';
+  url: string;
+  socket: WebSocket;
+  managers: any[];
 
-  logging: Log[] = [];
+  constructor() {
 
-  managers: Manager[] = [
-    {
-      id: 1,
-      name: 'Alex',
-      image: '/assets/alex.jpg',
-      votes: 0
-    },
-    {
-      id: 2,
-      name: 'Anne Dorte',
-      image: '/assets/anne_dorte.jpg',
-      votes: 0
-    },
-    {
-      id: 3,
-      name: 'Henrik',
-      image: '/assets/henrik.jpg',
-      votes: 0
-    }
-  ];
+    this.url = 'ws://localhost:8080';
+    this.socket = new WebSocket(this.url);
+    this.socket.onerror = subject.error;
+    this.socket.onclose = this.closed;
 
-  constructor(socket: SocketService) {
-    this.socket = socket;
+    const managers = [
+      {
+        id: 1,
+        name: 'Alex',
+        image: '/assets/alex.jpg',
+        votes: 0
+      },
+      {
+        id: 2,
+        name: 'Anne Dorte',
+        image: '/assets/anne_dorte.jpg',
+        votes: 0
+      },
+      {
+        id: 3,
+        name: 'Henrik',
+        image: '/assets/henrik.jpg',
+        votes: 0
+      }
+    ];
+
+    this.managers = managers;
   }
 
-  voteUp(manager: Manager, log: Log) {
-    manager.votes++
+  ready() {
+    console.log("READY")
+  }
 
-    const payload = {
-      manager: manager.name,
+  closed(event) {
+    alert("CLOSED")
+  }
+
+  incoming(event) {
+    const message = JSON.parse(event.data)
+
+    if (message.type === "update") {
+      const manager = this.managers.find(manager => {
+        return manager.name === message.name
+      })
+
+      manager.votes = message.votes
+    }
+  }
+
+  send(payload: object): void {
+    const toString = JSON.stringify(payload);
+    this.socket.send(toString);
+  }
+
+  parse(payload) {
+    return JSON.parse(payload)
+  }
+
+  voteUp(manager: any) {
+    console.log(this.managers)
+    manager.votes++;
+
+    console.log(this.managers)
+
+    const votes = {
+      type: "update",
+      name: manager.name,
       votes: manager.votes
-    }
+    };
 
-    this.socket.update(payload)
-
-   log = {
-      timestamp: Date.now(),
-      entry: `USER voted for ${manager.name}`
-    }
-
-    this.logging.push(log)
+    this.send(votes)
   }
-  voteDown(manager: Manager, log: Log) {
+  voteDown(manager: any) {
 
     if (manager.votes >= 1) {
       return manager.votes--
     }
 
-    const payload = {
-      manager: manager.name,
+    const votes = {
+      type: "update",
+      name: manager.name,
       votes: manager.votes
-    }
+    };
 
-    this.socket.update(payload)
+    this.send(votes)
 
   }
 
   ngOnInit(): void {
-    this.socket.connect()
+    this.socket.onopen = event => {
+      this.ready()
+    }
+    this.socket.onmessage = event => {
+      this.incoming(event)
+    }
+
   }
+
 }
