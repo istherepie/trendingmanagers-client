@@ -1,7 +1,7 @@
 {
-  "name": "clientapp",
+  "name": "trendingmanagers-client",
   "version": "0.0.1",
-  "description": "ManagerRating clientapp",
+  "description": "Friday fun project, more to come ...",
   "author": "Steffen Park <dev@istherepie.com",
   "license": "MIT",
   "scripts": {
