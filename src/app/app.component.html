@@ -1,29 +1,18 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
-  <h1>
-    {{ title }}
-  </h1>
+    <h1>{{ title }}</h1>
 </div>
 
 <div class="cards">
-  <div class="card" *ngFor="let manager of managers">
-    <h2>{{ manager.name }}</h2>
-    <img class="card-image" src="{{ manager.image }}">
-    <p>
-      Votes: {{ manager.votes }}
-    </p>
-    <button (click)="voteUp(manager)">UP</button>
-    <button (click)="voteDown(manager)">DOWN</button>
-  </div>
-</div>
+    <div class="card" *ngFor="let manager of managers">
 
-<!-- NO LOG
-<div>
-  <ul>
-    <li *ngFor="let log of logging">
-      {{ log.timestamp }} - {{ log.entry }}
-    </li>
-  </ul>
-</div>
--->
+        <h2>{{ manager.name }}</h2>
 
+        <img class="card-image" src="{{ manager.image }}">
+
+        <p>Votes: {{ manager.votes }}</p>
+
+        <button (click)="voteUp(manager)">UP</button>
+        <button (click)="voteDown(manager)">DOWN</button>
+    </div>
+</div>
