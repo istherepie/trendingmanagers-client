@@ -12,7 +12,7 @@
 
         <p>Votes: {{ manager.votes }}</p>
 
-        <button (click)="voteUp(manager)">UP</button>
-        <button (click)="voteDown(manager)">DOWN</button>
+        <button [disabled]="ready" (click)="voteUp(manager)">UP</button>
+        <button [disabled]="ready" (click)="voteDown(manager)">DOWN</button>
     </div>
 </div>
