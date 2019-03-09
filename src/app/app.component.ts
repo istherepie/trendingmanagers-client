@@ -1,27 +1,22 @@
 import { Component, OnInit} from "@angular/core";
 import { BackendService} from "./backend.service";
 
-const managers: Array<object> = [
+/**
+Fetch managers from backend api
+Does not currently exist.
+
+The backend should return a structure similar to,
+the following example:
+
     {
         id: 1,
-        name: "Alex",
-        image: "/assets/alex.jpg",
-        votes: 0
-    },
-    {
-        id: 2,
-        name: "Anne Dorte",
-        image: "/assets/anne_dorte.jpg",
-        votes: 0
-    },
-    {
-        id: 3,
-        name: "Henrik",
-        image: "/assets/henrik.jpg",
+        name: "Someone",
+        image: "/assets/someone.jpg",
         votes: 0
     }
-];
 
+ */
+const managers: Array<object> = [];
 
 @Component({
     selector: "app-root",
